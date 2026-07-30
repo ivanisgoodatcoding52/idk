@@ -3,42 +3,48 @@
 set -e
 
 echo "================================================================="
-echo "   COMMENCING REPOSITORY WORKSPACE GENERATION FOR D2ATT"
+echo "   COMMENCING CORRECTED WORKSPACE REPO SYNC FOR D2ATT"
 echo "================================================================="
 
-# 1. SETUP SYSTEM PATH AND FETCH GOOGLE REPO UTILITY TOOL
-echo "[*] Initializing local bin paths and downloading Google Repo tool..."
+# 1. CONFIGURE WORKSPACE USER PATHS AND ENVIRONMENT POINTERS
+echo "[*] Initializing ~/bin directory structure..."
 mkdir -p ~/bin
-curl https://googleapis.com > ~/bin/repo
+
+# Download Google Repo launcher natively into your home profile path
+curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
 chmod a+x ~/bin/repo
 
-# Bind path tracking temporarily for this script execution session
+# Set up local shell path execution visibility 
 export PATH=~/bin:$PATH
 
-# 2. PROVISION 16GB VIRTUAL SWAP LAYER TO PROTECT LINK COMPILATION
-echo "[*] Configuring a 16GB swap file to prevent server RAM saturation errors..."
+# 2. SEPARATELY ENGAGE ROOT ACTIONS FOR VIRTUAL SWAP MEMORY
+echo "[*] Checking virtual memory allocations..."
 if [ ! -f /swapfile ]; then
+    echo "[!] Requesting root authority to create 16GB compilation swap space..."
     sudo fallocate -l 16G /swapfile
     sudo chmod 600 /swapfile
     sudo mkswap /swapfile
     sudo swapon /swapfile
     echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab
 else
-    echo "[!] Active swap file already detected. Skipping creation."
+    echo "[!] Active swap file already detected. Skipping."
 fi
 
-# 3. INITIALIZE WORKSPACE PATH DIRECTORIES
-echo "[*] Creating master AOSP 8 source tree workspace layout..."
+# 3. CONSTRUCT ENTIRE WORKSPACE STORAGE STRUCTURES
+echo "[*] Creating master AOSP directory array..."
 mkdir -p ~/android/aosp-8
 cd ~/android/aosp-8
 
-# 4. INITIALIZE REPO TRACKING CORE (ANDROID 8.1 OREO)
-echo "[*] Initializing standard stable AOSP Oreo branch dependencies..."
-# Running it with python3 ensures the modern repo infrastructure tool launches flawlessly
-python3 ~/bin/repo init -u https://googlesource.com -b android-8.1.0_r81 --noprompt
+# Clean out any previous failed initialization remnants
+rm -rf .repo
 
-# 5. INJECT CUSTOM D2ATT HARDWARE METADATA LOCAL MANIFEST
-echo "[*] Injecting target Samsung Galaxy S3 AT&T platform dependencies..."
+# 4. INITIALIZE REPO ENGINE (FORCING THE PYTHON3 PATH WRAPPER)
+echo "[*] Initializing stable AOSP Oreo branch dependencies..."
+# Running this explicitly via python3 ensures the modern repo launcher loads flawlessly
+python3 ~/bin/repo init -u https://android.googlesource.com/platform/manifest -b android-8.1.0_r81 --noprompt
+
+# 5. GENERATE DEVICE-SPECIFIC LOCAL MANIFEST METADATA
+echo "[*] Injecting Samsung Galaxy S3 AT&T (d2att) custom device mapping data..."
 mkdir -p .repo/local_manifests
 
 cat <<EOF > .repo/local_manifests/d2att.xml
@@ -59,15 +65,15 @@ cat <<EOF > .repo/local_manifests/d2att.xml
 </manifest>
 EOF
 
-# 6. RUN THE BULK DATA SYNCHRONIZATION OVER CHANNELS
+# 6. TRIGGER THE BULK USER-LEVEL PARALLEL SOURCE CODE DOWNLOAD
 echo "================================================================="
-echo " ENV ARCHITECTURE ALLOCATED SUCCESSFULLY! STARTING DOWNLOAD."
+echo " CONFIGURATION SUCCESSFUL! STARTING NATIVE SYSTEM REPO SYNC."
 echo " Fetching roughly 100GB-150GB of core raw platform codebase resources."
-echo " This will take a long time depending on network connection..."
+echo " Running completely via standard user space threads to bypass locks."
 echo "================================================================="
 python3 ~/bin/repo sync -c -j$(nproc) --force-sync --no-clone-bundle --no-tags
 
 echo "================================================================="
-echo " DATA SYNC SUCESSFULLY ACCOMPLISHED!"
+echo " DATA SYNC SUCCESSFUL!"
 echo " Source code is staged and fully indexed inside ~/android/aosp-8"
 echo "================================================================="
