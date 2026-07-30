@@ -17,7 +17,13 @@ chmod a+x ~/bin/repo
 # Set up local shell path execution visibility 
 export PATH=~/bin:$PATH
 
-# 2. SEPARATELY ENGAGE ROOT ACTIONS FOR VIRTUAL SWAP MEMORY
+# 2. INLINE GIT CONFIGURATION (Resolves identity issues)
+echo "[*] Configuring Git global identification profile..."
+git config --global user.name "AOSP Builder"
+git config --global user.email "builder@aosp.local"
+git config --global color.ui false
+
+# 3. SEPARATELY ENGAGE ROOT ACTIONS FOR VIRTUAL SWAP MEMORY
 echo "[*] Checking virtual memory allocations..."
 if [ ! -f /swapfile ]; then
     echo "[!] Requesting root authority to create 16GB compilation swap space..."
@@ -30,7 +36,7 @@ else
     echo "[!] Active swap file already detected. Skipping."
 fi
 
-# 3. CONSTRUCT ENTIRE WORKSPACE STORAGE STRUCTURES
+# 4. CONSTRUCT ENTIRE WORKSPACE STORAGE STRUCTURES
 echo "[*] Creating master AOSP directory array..."
 mkdir -p ~/android/aosp-8
 cd ~/android/aosp-8
@@ -38,12 +44,11 @@ cd ~/android/aosp-8
 # Clean out any previous failed initialization remnants
 rm -rf .repo
 
-# 4. INITIALIZE REPO ENGINE (FORCING THE PYTHON3 PATH WRAPPER)
+# 5. INITIALIZE REPO ENGINE (Using echo to safely bypass interactive prompts)
 echo "[*] Initializing stable AOSP Oreo branch dependencies..."
-# Running this explicitly via python3 ensures the modern repo launcher loads flawlessly
-python3 ~/bin/repo init -u https://android.googlesource.com/platform/manifest -b android-8.1.0_r81 --noprompt
+echo | python3 ~/bin/repo init -u https://android.googlesource.com/platform/manifest -b android-8.1.0_r81
 
-# 5. GENERATE DEVICE-SPECIFIC LOCAL MANIFEST METADATA
+# 6. GENERATE DEVICE-SPECIFIC LOCAL MANIFEST METADATA
 echo "[*] Injecting Samsung Galaxy S3 AT&T (d2att) custom device mapping data..."
 mkdir -p .repo/local_manifests
 
@@ -65,7 +70,7 @@ cat <<EOF > .repo/local_manifests/d2att.xml
 </manifest>
 EOF
 
-# 6. TRIGGER THE BULK USER-LEVEL PARALLEL SOURCE CODE DOWNLOAD
+# 7. TRIGGER THE BULK USER-LEVEL PARALLEL SOURCE CODE DOWNLOAD
 echo "================================================================="
 echo " CONFIGURATION SUCCESSFUL! STARTING NATIVE SYSTEM REPO SYNC."
 echo " Fetching roughly 100GB-150GB of core raw platform codebase resources."
