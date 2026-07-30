@@ -2,28 +2,6 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-echo "================================================================="
-echo " STARTING AOSP 8 BRINGUP ENVIRONMENT SETUP FOR UBUNTU 24.04"
-echo " Target Device: Samsung Galaxy S3 AT&T (d2att)"
-echo "================================================================="
-
-# 1. ADD LEGACY UBUNTU 20.04 REPOSITORIES FOR NCURSES5
-echo "[*] Adding focal-security repository sources for legacy libncurses5..."
-sudo tee /etc/apt/sources.list.d/focal-security.list <<EOF
-deb http://ubuntu.com focal-security main universe
-EOF
-
-# 2. UPDATE SYSTEM AND ENABLE MULTI-ARCH TRACKING
-echo "[*] Updating package databases and enabling i386 multi-arch support..."
-sudo dpkg --add-architecture i386
-sudo apt update
-
-# 3. INSTALL COMPILATION DEPENDENCIES AND OPENJDK 8
-echo "[*] Installing native 64-bit and legacy 32-bit compilation toolchains..."
-sudo apt install -y git-core gnupg flex bison build-essential zip curl \
-  zlib1g-dev libx11-dev libxml2-utils xsltproc unzip openjdk-8-jdk bc rsync \
-  libncurses5 libncurses5:i386 libstdc++6:i386 zlib1g:i386 python2-minimal nano
-
 # 4. FIX SYSTEM PYTHON INTERPRETER ALIASES
 echo "[*] Mapping global Python alias paths (Python3 default, Python2 available)..."
 sudo ln -sf /usr/bin/python3 /usr/local/bin/python
