@@ -27,4 +27,4 @@ rm python2.7-minimal_2.7.18-13ubuntu1.5_amd64.deb
 
 sudo apt install -y git-core gnupg flex bison build-essential zip curl \
   zlib1g-dev libx11-dev libxml2-utils xsltproc unzip openjdk-8-jdk bc rsync \
-  libstdc++6:i386 zlib1g:i386 python2-minimal nano
+  libstdc++6:i386 zlib1g:i386 nano
