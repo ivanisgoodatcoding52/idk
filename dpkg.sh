@@ -25,24 +25,14 @@ sudo apt install -y build-essential libssl-dev zlib1g-dev \
   libncursesw5-dev xz-utils tk-dev libxml2-dev \
   libxmlsec1-dev libffi-dev liblzma-dev git
 
-mkdir -p ~/python2-master && cd ~/python2-master
+sudo apt update
+sudo apt install -y build-essential checkinstall libreadline-dev \
+  libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev \
+  libc6-dev libbz2-dev libffi-dev zlib1g-dev
+cd /usr/src
+sudo wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+sudo tar xzf Python-2.7.18.tgz
+cd Python-2.7.18
+sudo ./configure --enable-optimizations
+sudo make altinstall
 
-# 2. Map standard directory endpoints to the Main Archive Pool
-M_POOL="http://ubuntu.com"
-V_TAG="2.7.18-13ubuntu1_amd64.deb"
-
-# 3. Pull down the exact full system package chain sequentially
-wget "${M_POOL}/libpython2.7-minimal_${V_TAG}"
-wget "${M_POOL}/python2.7-minimal_${V_TAG}"
-wget "${M_POOL}/libpython2.7-stdlib_${V_TAG}"
-wget "${M_POOL}/python2.7_${V_TAG}"
-
-# 4. Simultaneously force configure the dependency chain via dpkg
-sudo dpkg -i libpython2.7-minimal_*.deb python2.7-minimal_*.deb libpython2.7-stdlib_*.deb python2.7_*.deb
-
-# 5. Clean up downloaded package remnants
-cd ~ && rm -rf ~/python2-master
-
-# 6. Rebind execution paths for legacy Qualcomm build triggers
-sudo ln -sf /usr/bin/python2.7 /usr/local/bin/python2
-sudo ln -sf /usr/bin/python2.7 /usr/local/bin/python2.7
