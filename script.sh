@@ -2,13 +2,21 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-# 4. FIX SYSTEM PYTHON INTERPRETER ALIASES
-echo "[*] Mapping global Python alias paths (Python3 default, Python2 available)..."
-sudo ln -sf /usr/bin/python3 /usr/local/bin/python
-sudo ln -sf /usr/bin/python2 /usr/local/bin/python2
+echo "================================================================="
+echo "   COMMENCING REPOSITORY WORKSPACE GENERATION FOR D2ATT"
+echo "================================================================="
 
-# 5. ALLOCATE 16GB VIRTUAL SWAP FILE TO PREVENT OUT-OF-MEMORY CRASHES
-echo "[*] Setting up a 16GB swap file to protect server RAM during linkage phases..."
+# 1. SETUP SYSTEM PATH AND FETCH GOOGLE REPO UTILITY TOOL
+echo "[*] Initializing local bin paths and downloading Google Repo tool..."
+mkdir -p ~/bin
+curl https://googleapis.com > ~/bin/repo
+chmod a+x ~/bin/repo
+
+# Bind path tracking temporarily for this script execution session
+export PATH=~/bin:$PATH
+
+# 2. PROVISION 16GB VIRTUAL SWAP LAYER TO PROTECT LINK COMPILATION
+echo "[*] Configuring a 16GB swap file to prevent server RAM saturation errors..."
 if [ ! -f /swapfile ]; then
     sudo fallocate -l 16G /swapfile
     sudo chmod 600 /swapfile
@@ -16,29 +24,21 @@ if [ ! -f /swapfile ]; then
     sudo swapon /swapfile
     echo "/swapfile none swap sw 0 0" | sudo tee -a /etc/fstab
 else
-    echo "[!] Swapfile already exists. Skipping allocation."
+    echo "[!] Active swap file already detected. Skipping creation."
 fi
 
-# 6. SETUP LOCAL BIN DIR AND FETCH GOOGLE REPO TOOL
-echo "[*] Fetching Google Repo orchestration binary tool..."
-mkdir -p ~/bin
-curl https://googleapis.com > ~/bin/repo
-chmod a+x ~/bin/repo
-
-# Temporarily append ~/bin to the active path scope for the remainder of this script execution
-export PATH=~/bin:$PATH
-
-# 7. INITIALIZE THE WORKSPACE DIRECTORY
-echo "[*] Creating workspace target directories..."
+# 3. INITIALIZE WORKSPACE PATH DIRECTORIES
+echo "[*] Creating master AOSP 8 source tree workspace layout..."
 mkdir -p ~/android/aosp-8
 cd ~/android/aosp-8
 
-# 8. INITIALIZE REPO TRACKING CORE (ANDROID 8.1 OREO)
-echo "[*] Launching repo init targeting Android 8.1 Oreo baseline..."
-repo init -u https://googlesource.com -b android-8.1.0_r81 --noprompt
+# 4. INITIALIZE REPO TRACKING CORE (ANDROID 8.1 OREO)
+echo "[*] Initializing standard stable AOSP Oreo branch dependencies..."
+# Running it with python3 ensures the modern repo infrastructure tool launches flawlessly
+python3 ~/bin/repo init -u https://googlesource.com -b android-8.1.0_r81 --noprompt
 
-# 9. GENERATE THE LOCAL MANIFEST METADATA FILE FOR D2ATT
-echo "[*] Injecting custom d2att hardware structure tree specifications..."
+# 5. INJECT CUSTOM D2ATT HARDWARE METADATA LOCAL MANIFEST
+echo "[*] Injecting target Samsung Galaxy S3 AT&T platform dependencies..."
 mkdir -p .repo/local_manifests
 
 cat <<EOF > .repo/local_manifests/d2att.xml
@@ -59,15 +59,15 @@ cat <<EOF > .repo/local_manifests/d2att.xml
 </manifest>
 EOF
 
-# 10. RUN THE INITIAL SYNCHRONIZATION DATA FETCH
+# 6. RUN THE BULK DATA SYNCHRONIZATION OVER CHANNELS
 echo "================================================================="
-echo " CONFIGURATION COMPLETE! STARTING BASE SOURCE DOWNLOAD."
-echo " This process downloads roughly 100GB-150GB of raw codebase files."
-echo " Depending on internet speeds, this will take some time..."
+echo " ENV ARCHITECTURE ALLOCATED SUCCESSFULLY! STARTING DOWNLOAD."
+echo " Fetching roughly 100GB-150GB of core raw platform codebase resources."
+echo " This will take a long time depending on network connection..."
 echo "================================================================="
-repo sync -c -j$(nproc) --force-sync --no-clone-bundle --no-tags
+python3 ~/bin/repo sync -c -j$(nproc) --force-sync --no-clone-bundle --no-tags
 
 echo "================================================================="
-echo " WORKSPACE SUCCESSFULLY ASSEMBLED AND SYNCHRONIZED!"
-echo " Navigate to ~/android/aosp-8 to check downloaded trees."
+echo " DATA SYNC SUCESSFULLY ACCOMPLISHED!"
+echo " Source code is staged and fully indexed inside ~/android/aosp-8"
 echo "================================================================="
