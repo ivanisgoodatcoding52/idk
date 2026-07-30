@@ -19,3 +19,6 @@ sudo apt install ./libtinfo5_6.3-2ubuntu0.2_amd64.deb \
                  ./libtinfo5_6.3-2ubuntu0.2_i386.deb \
                  ./libncurses5_6.3-2ubuntu0.2_i386.deb
 
+sudo apt install -y git-core gnupg flex bison build-essential zip curl \
+  zlib1g-dev libx11-dev libxml2-utils xsltproc unzip openjdk-8-jdk bc rsync \
+  libstdc++6:i386 zlib1g:i386 python2-minimal nano
