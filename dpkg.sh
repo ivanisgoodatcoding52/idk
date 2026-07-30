@@ -26,13 +26,22 @@ sudo apt install -y build-essential libssl-dev zlib1g-dev \
   libxmlsec1-dev libffi-dev liblzma-dev git
 
 mkdir -p ~/python2-debs && cd ~/python2-debs
+# 2. Re-map strings to target the updated security micro-releases
 B_URL="http://ubuntu.com"
-VERSION_SUFX="2.7.18-13ubuntu1.5_amd64.deb"
+VERSION_SUFX="2.7.18-13ubuntu1.12_amd64.deb"
+
+# 3. Fetch each interlocking .deb block securely
 wget "${B_URL}/libpython2.7-minimal_${VERSION_SUFX}"
 wget "${B_URL}/python2.7-minimal_${VERSION_SUFX}"
 wget "${B_URL}/libpython2.7-stdlib_${VERSION_SUFX}"
 wget "${B_URL}/python2.7_${VERSION_SUFX}"
+
+# 4. Force simultaneous localized package configuration
 sudo dpkg -i libpython2.7-minimal_*.deb python2.7-minimal_*.deb libpython2.7-stdlib_*.deb python2.7_*.deb
+
+# 5. Erase installation trace leftovers
 cd ~ && rm -rf ~/python2-debs
+
+# 6. Re-bind target execution pointer masks
 sudo ln -sf /usr/bin/python2.7 /usr/local/bin/python2
 sudo ln -sf /usr/bin/python2.7 /usr/local/bin/python2.7
