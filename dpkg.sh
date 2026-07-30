@@ -25,3 +25,14 @@ sudo apt install -y build-essential libssl-dev zlib1g-dev \
   libncursesw5-dev xz-utils tk-dev libxml2-dev \
   libxmlsec1-dev libffi-dev liblzma-dev git
 
+mkdir -p ~/python2-debs && cd ~/python2-debs
+B_URL="http://ubuntu.com"
+VERSION_SUFX="2.7.18-13ubuntu1.5_amd64.deb"
+wget "${B_URL}/libpython2.7-minimal_${VERSION_SUFX}"
+wget "${B_URL}/python2.7-minimal_${VERSION_SUFX}"
+wget "${B_URL}/libpython2.7-stdlib_${VERSION_SUFX}"
+wget "${B_URL}/python2.7_${VERSION_SUFX}"
+sudo dpkg -i libpython2.7-minimal_*.deb python2.7-minimal_*.deb libpython2.7-stdlib_*.deb python2.7_*.deb
+cd ~ && rm -rf ~/python2-debs
+sudo ln -sf /usr/bin/python2.7 /usr/local/bin/python2
+sudo ln -sf /usr/bin/python2.7 /usr/local/bin/python2.7
