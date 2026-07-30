@@ -11,7 +11,7 @@ echo "[*] Initializing ~/bin directory structure..."
 mkdir -p ~/bin
 
 # Download Google Repo launcher natively into your home profile path
-curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo
+curl https://googleapis.com > ~/bin/repo
 chmod a+x ~/bin/repo
 
 # Set up local shell path execution visibility 
@@ -46,15 +46,18 @@ rm -rf .repo
 
 # 5. INITIALIZE REPO ENGINE (Using echo to safely bypass interactive prompts)
 echo "[*] Initializing stable AOSP Oreo branch dependencies..."
-echo | python3 ~/bin/repo init -u https://android.googlesource.com/platform/manifest -b android-8.1.0_r81
+echo | python3 ~/bin/repo init -u https://googlesource.com -b android-8.1.0_r81
 
-# 6. GENERATE DEVICE-SPECIFIC LOCAL MANIFEST METADATA
+# 6. GENERATE DEVICE-SPECIFIC LOCAL MANIFEST METADATA (WITH GITHUB REMOTE FIXED)
 echo "[*] Injecting Samsung Galaxy S3 AT&T (d2att) custom device mapping data..."
 mkdir -p .repo/local_manifests
 
 cat <<EOF > .repo/local_manifests/d2att.xml
 <?xml version="1.0" encoding="UTF-8"?>
 <manifest>
+  <!-- EXPLICITLY DEFINE GITHUB REMOTE SO AOSP UNDERSTANDS WHERE TO FETCH -->
+  <remote name="github" fetch="https://github.com" />
+
   <!-- S3 AT&T Specific Repositories -->
   <project name="LineageOS/android_device_samsung_d2att" path="device/samsung/d2att" remote="github" revision="cm-14.1" />
   <project name="LineageOS/android_kernel_samsung_d2att" path="kernel/samsung/d2att" remote="github" revision="cm-14.1" />
